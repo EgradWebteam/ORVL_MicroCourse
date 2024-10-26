@@ -1,5 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
+import './Documentuploder.css'
 
 const Documentuploder = () => {
   const [exams, setExams] = useState([]);
@@ -44,8 +45,8 @@ const Documentuploder = () => {
   };
   return (
     <div>Documentuploder
-      <div>
-      <form >
+      <div className='documentuploderForm'>
+      <form  >
       <label htmlFor="examName">Select Exam:</label>
       <select id="examName" value={selectedExam} onChange={handleExamChange} required>
         <option value="">--Select Exam--</option>
