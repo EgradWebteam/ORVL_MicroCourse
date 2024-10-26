@@ -1,0 +1,19 @@
+.headermc{
+    width:100%;
+    height:auto;
+}
+.subheadermc{
+    width:90%;
+    margin:0 auto;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.imglogo{
+    width:200px;
+    height:80px;
+}
+.imglogo img{
+    width:100%;
+    height:100%;
+}
