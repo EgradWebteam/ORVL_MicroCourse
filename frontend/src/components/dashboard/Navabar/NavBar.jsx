@@ -4,10 +4,10 @@ const NavBar = () => {
   const [activeButton, setActiveButton] = useState('');
   useEffect(() => {
     const path = window.location.pathname;
-    if (path === `/Dashboard`) {
+    if (path === `/`) {
       setActiveButton('Dashboard');
     } else if (path === `/Mycourses`) {
-      setActiveButton('Mycourses');
+      setActiveButton('/Mycourses');
     } else if (path === `/BuyCourses`) {
       setActiveButton('BuyCourses');
     } else if (path === `/Myaccount`) {
@@ -18,13 +18,13 @@ const NavBar = () => {
   return (
     <div>
        <div>
-       <a href={`/Dashboard`}>
+       <a href={`/`}>
           <button className={`btnudnb nav-button ${activeButton === 'Dashboard' ? 'active' : ''}`}>
             Dashboard
           </button>
         </a>
         <a href={`/Mycourses`}>
-          <button className={`btnudnb nav-button ${activeButton === 'MyCourses' ? 'active' : ''}`}>
+          <button className={`btnudnb nav-button ${activeButton === '/Mycourses' ? 'active' : ''}`}>
             My Courses
           </button>
         </a>
