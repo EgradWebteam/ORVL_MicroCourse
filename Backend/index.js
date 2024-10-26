@@ -97,7 +97,7 @@ app.get("/MicroCourseNames/:examId", async (req, res) => {
   });
   
 // Upload route
-app.post("/videouploaddoc", upload.single("document"), async (req, res) => {
+app.post("/ORVL_uploadDocument", upload.single("document"), async (req, res) => {
     const {
       LN, LVL, EN, EQ, EANS, EVSOL, EQSID, ESOL, a, b, c, d, courseId
     } = req.body;
