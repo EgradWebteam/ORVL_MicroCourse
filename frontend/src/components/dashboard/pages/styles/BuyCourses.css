@@ -1,0 +1,84 @@
+.imgsrc {
+    width: 300px;
+    height: 170px;
+}
+.imgsrc img{
+    width: 100%;
+    height: 100%;
+}
+.exam-cardvl{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    box-shadow: 0 0 5px #00000080;
+    border-radius: 8px;
+    padding: 10px;
+}
+.fsvnsv.pricebuy {
+    display: flex;
+    gap: 2rem;
+}
+.userInterfaceMainCon {
+    width: 80%;
+    margin: 0 10%;
+}
+.h3cn {
+    font-size: 18px;
+    font-weight: bolder;
+    padding: 10px 0px;
+}
+.h4cn {
+    font-size: 17px;
+    font-weight: bolder;
+    padding: 5px 0px;
+}
+.comcardbuyprice {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px 0px;
+}
+a.btnbut {
+    padding: 5px;
+    background: #1e83d2;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+}
+.paymentform {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+form.paymentformflex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 500px;
+    height: auto;
+    box-shadow: 0 0 5px #00000080;
+    padding: 1rem;
+    border-radius: 8px;
+}
+input.inputfpem.inputpayment {
+    width: 100%;
+    height: 30px;
+}
+input.inputfpem.inputpayment:focus{
+    border:2px solid #66afe9;
+    outline: none;
+
+}
+.btnpayment{
+    background-color: #1e83d2;
+    color: #fff;
+    border: none;
+    padding: 5px;
+    border-radius: 6px;
+}

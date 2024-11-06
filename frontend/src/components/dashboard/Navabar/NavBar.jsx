@@ -1,42 +1,42 @@
 import React,{ useState, useEffect } from 'react'
 import './NavBar.css'
-const NavBar = () => {
+const NavBar = ({ userId }) => {
   const [activeButton, setActiveButton] = useState('');
   useEffect(() => {
     const path = window.location.pathname;
-    if (path === `/`) {
+    if (path === `/UserDashboard/${userId}`) {
       setActiveButton('Dashboard');
-    } else if (path === `/Mycourses`) {
+    } else if (path === `/Mycourses/${userId}`) {
       setActiveButton('/Mycourses');
-    } else if (path === `/BuyCourses`) {
+    } else if (path === `/BuyCourses/${userId}`) {
       setActiveButton('BuyCourses');
-    } else if (path === `/Myaccount`) {
-      setActiveButton('Myaccount');
+    } else if (path === `/Myaccount/${userId}`) {
+      setActiveButton('MyAccount');
     }
   }, []);
 
   return (
-    <div>
-       <div>
-       <a href={`/`}>
-          <button className={`btnudnb nav-button ${activeButton === 'Dashboard' ? 'active' : ''}`}>
+    <div className='navbarMicroCourses'>
+       <div className='SubnavbarMicroCourses'>
+       <a href={`/UserDashboard/${userId}`}>
+          <div className={`btnudnb nav-button ${activeButton === 'Dashboard' ? 'active' : ''}`}>
             Dashboard
-          </button>
+          </div>
         </a>
-        <a href={`/Mycourses`}>
-          <button className={`btnudnb nav-button ${activeButton === '/Mycourses' ? 'active' : ''}`}>
+        <a href={`/Mycourses/${userId}`}>
+          <div className={`btnudnb nav-button ${activeButton === '/Mycourses' ? 'active' : ''}`}>
             My Courses
-          </button>
+          </div>
         </a>
-        <a href={`/BuyCourses`}>
-          <button className={`btnudnb nav-button ${activeButton === 'BuyCourses' ? 'active' : ''}`}>
+        <a href={`/BuyCourses/${userId}`}>
+          <div  className={`btnudnb nav-button ${activeButton === 'BuyCourses' ? 'active' : ''}`}>
             Buy Courses
-          </button>
+          </div>
         </a>
-        <a href={`/Myaccount`}>
-          <button className={`btnudnb nav-button ${activeButton === 'MyAccount' ? 'active' : ''}`}>
+        <a href={`/Myaccount/${userId}`}>
+          <div  className={`btnudnb nav-button ${activeButton === 'MyAccount' ? 'active' : ''}`}>
             My Account
-          </button>
+          </div>
         </a>
        </div>
     </div>
