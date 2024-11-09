@@ -20,7 +20,7 @@
     width: 100%;
     height: 100%;
 }
-.btnbut {
+/* .btnbut {
     padding: 5px;
     background: #1e83d2;
     color: #fff;
@@ -28,6 +28,67 @@
     text-align: center;
     border:none;
 }
+.number-palette button.unanswered {
+    background-color: red;
+    color: white;
+}
+
+.number-palette button.answered {
+    background-color: green;
+    color: white;
+}
+
+.number-palette button.active {
+    border: 2px solid blue;
+} */
+
+/* .number-palette button {
+    /* Add your general button styles here 
+    margin: 5px;
+    padding: 10px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    cursor: pointer;
+} */
+.number-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.number-palette button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: white; /* Default color */
+}
+
+.number-palette button.answered {
+    background-color: red; /* Red for answered questions */
+    color: white;
+}
+
+.number-palette button.visited {
+    background-color: lightgray; /* Light gray for visited but unanswered */
+    color: black;
+}
+
+.number-palette button.not-visited {
+    background-color: white; /* White for not visited questions */
+    color: black;
+}
+
+/* Optional: Add hover effect */
+.number-palette button:hover {
+    opacity: 0.8;
+}
+
 .active{
     background-color: #1e83d2;
     border: 1px solid #025797;
@@ -142,6 +203,59 @@ button.btnclose {
     background-color: green;
     color: white;
 }
+button.number-plate.notAnswered {
+    background: red;
+    color: white;
+}
+/* Modal overlay (background) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);  /* Dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content */
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    overflow-y: auto;
+    max-height: 90vh;  /* Make sure modal content doesn't overflow */
+    text-align: center;
+}
+
+/* Close button style */
+.modal-close-btn {
+   background-color: #fff;
+    border: none;
   
+    position: relative;
+    left: 280px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.modal-close-btn svg{
+    color: #979393;
+    font-size: 22px;
+    font-weight: 900;
+}
+/* Close button hover effect */
+/* .modal-close-btn svg:hover {
+    color: darkred;
+} */
+.vidsolhead {
+    padding: 5px;
+    font-size: 18px;
+    font-weight: 700;
+}
 
   
