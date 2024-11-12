@@ -8,7 +8,10 @@ const NavBar = ({ userId }) => {
       setActiveButton('Dashboard');
     } else if (path === `/Mycourses/${userId}`) {
       setActiveButton('/Mycourses');
-    } else if (path === `/BuyCourses/${userId}`) {
+    } 
+    else if (path === `/FinalTestMicrocourses/${userId}`) {
+      setActiveButton('/FinalTestMicrocourses');
+    }else if (path === `/BuyCourses/${userId}`) {
       setActiveButton('BuyCourses');
     } else if (path === `/Myaccount/${userId}`) {
       setActiveButton('MyAccount');
@@ -26,6 +29,11 @@ const NavBar = ({ userId }) => {
         <a href={`/Mycourses/${userId}`}>
           <div className={`btnudnb nav-button ${activeButton === '/Mycourses' ? 'active' : ''}`}>
             My Courses
+          </div>
+        </a>
+        <a href={`/FinalTestMicrocourses/${userId}`}>
+          <div className={`btnudnb nav-button ${activeButton === '/FinalTestMicrocourses' ? 'active' : ''}`}>
+            My Tests
           </div>
         </a>
         <a href={`/BuyCourses/${userId}`}>

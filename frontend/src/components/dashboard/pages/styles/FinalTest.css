@@ -1,0 +1,40 @@
+.finaltesttable tr {
+    text-align: center;
+}
+.btnStart{
+    background-color: rgb(3, 59, 105);
+    outline: none;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+}
+.btnStart:disabled {
+    background-color: rgb(102, 139, 170); /* Light gray background */
+    color: #aaa; /* Light gray text color */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    opacity: 0.6; /* Optional: Apply opacity to make the button look inactive */
+    color: #000;
+    outline: none;
+  }
+  .userInterfaceMainCon {
+    width: 80%;
+    margin: 0 10%;
+}
+.flexcolumforpaleques {
+    display: flex;
+    justify-content: space-between;
+}
+.fexnumberssubmit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.exampart {
+    margin: 0 auto;
+    width: 80%;
+    display: flex;
+    gap: 4rem;
+    flex-direction: column;
+}

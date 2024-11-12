@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import HeaderMc from '../Headermicrocourses/HeaderMc';
 import NavBar from '../Navabar/NavBar';
 import './styles/Mycourses.css'
@@ -9,7 +9,17 @@ import { FaRegPlayCircle } from "react-icons/fa";
 import { IoNewspaperSharp } from "react-icons/io5";
 import { GrNext } from "react-icons/gr";
 import { IoMdClose } from "react-icons/io";
-
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { Pie } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+    Title,
+} from 'chart.js';
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 const CourseDetails = () => {
     const { id, courseId } = useParams();
     const [course, setCourse] = useState(null);
@@ -18,6 +28,7 @@ const CourseDetails = () => {
     const [currentLectureIndex, setCurrentLectureIndex] = useState(0);
     const [showExercise, setShowExercise] = useState(false);
     const [userAnswer, setUserAnswer] = useState([]);
+    const [finalTests, setFinalTests] = useState([]);
     const [feedback, setFeedback] = useState('');
     const [showLectures, setShowLectures] = useState(true);
     const [videoSolutions, setVideoSolutions] = useState([]); // State for video solutions
@@ -25,14 +36,14 @@ const CourseDetails = () => {
     const [answerDisabled, setAnswerDisabled] = useState(false);  // State for image solutions
     const [loading, setLoading] = useState(false);  // For showing a loading state while submitting
     const [error, setError] = useState(null); 
-    const [answeredQuestions, setAnsweredQuestions] = useState([]);
+    const navigate = useNavigate();
     const [questionStatuses, setQuestionStatuses] = useState([]); // Array to track the status of each question
-    const [unansweredQuestions, setUnansweredQuestions] = useState([]);
+
     const [lastVisitedVideoId, setLastVisitedVideoId] = useState(null);
     const [viewingSolutionForQuestion, setViewingSolutionForQuestion] = useState(null);
-    const [exerciseQuestionStatuses, setExerciseQuestionStatuses] = useState({});
-
-
+    const [accessGranted, setAccessGranted] = useState(null);
+    const [percentageforve, setpercentageforve] = useState(null);
+    const [visibleinlist, setvisibleinlist] = useState(true);
     
     const trackVideoVisit = (videoId) => {
         console.log('Tracking video visit for videoId:', videoId); // Log videoId
@@ -50,62 +61,28 @@ const CourseDetails = () => {
             });
         }
     };
-    // useEffect(() => {
-    //     const fetchQuestionStatus = async () => {
-    //         if (selectedVideo && selectedVideo.exerciseQuestions) {
-    //             const exerciseQuestionId = selectedVideo.exerciseQuestions[currentExerciseIndex]?.excercise_question_Id;
-    //             console.log('Fetching status for exercise question:', exerciseQuestionId);
-    
-    //             try {
-    //                 const response = await axios.get(`http://localhost:5000/microcourses/excerciseQuestionStatusData/${id}/${selectedVideo.unitExerciseId}/${exerciseQuestionId}`);
-    //                 console.log('Fetched question status:', response.data);
-    
-    //                 // Assuming response.data is an array, you can extract the status
-    //                 const status = response.data.length > 0 ? response.data[0].question_status : 'NotVisited'; // Default to 'NotVisited' if no status found
-    
-    //                 // Update questionStatuses array at the correct index
-    //                 setQuestionStatuses(prevState => {
-    //                     const updatedStatuses = [...prevState]; // Copy the previous state
-    //                     updatedStatuses[currentExerciseIndex] = status; // Update the current question's status
-    //                     console.log('Updated question statuses:', updatedStatuses); // Log to check updated status
-    //                     return updatedStatuses; // Return the updated state
-    //                 });
-    //             } catch (err) {
-    //                 setError('Error fetching question status');
-    //                 console.error('Error fetching question status:', err);
-    //             }
-    //         }
-    //     };
-    
-    //     fetchQuestionStatus();
-    // }, [id, selectedVideo, currentExerciseIndex]);
-    
     useEffect(() => {
-        // const fetchQuestionStatuses = async () => {
-        //     if (selectedVideo && selectedVideo.exerciseQuestions) {
-        //         const unitExerciseId = selectedVideo.unitExerciseId;
+        const checkAccess = async () => {
+          try {
+            const accessResponse = await axios.get(`http://localhost:5000/microcourses/accessStatus/${id}/${courseId}`);
+            setpercentageforve(accessResponse.data)
+            if (accessResponse.data.access) {
+              setAccessGranted(true); // User has access, now fetch course details
+            } else {
+              setAccessGranted(false); // User doesn't have access
+            }
+          } catch (err) {
+            setError('Error checking access');
+          }
+        };
+    
+        checkAccess();
+      }, [id, courseId]); 
+   
+   
+        
+    useEffect(() => {
 
-        //         try {
-        //             // Fetch all question statuses for the unit exercise and user
-        //             const response = await axios.get(`http://localhost:5000/microcourses/excerciseQuestionStatusData/${id}/${unitExerciseId}`);
-        //             console.log('Fetched question statuses:', response.data);
-
-        //             // Initialize an array to store the statuses
-        //             const statuses = selectedVideo.exerciseQuestions.map((question) => {
-        //                 // Find the status for each question
-        //                 const questionStatus = response.data.find(status => status.excercise_question_Id === question.excercise_question_Id);
-        //                 return questionStatus ? questionStatus.question_status : 'NotVisited'; // Default to 'NotVisited' if no status found
-        //             });
-
-        //             // Update the question statuses state
-        //             setQuestionStatuses(statuses);
-        //             console.log('Updated question statuses:', statuses);
-        //         } catch (err) {
-        //             setError('Error fetching question statuses');
-        //             console.error('Error fetching question statuses:', err);
-        //         }
-        //     }
-        // };
 
         fetchQuestionStatuses();
     }, [id, selectedVideo]);
@@ -136,6 +113,7 @@ const CourseDetails = () => {
         setShowExercise(false);
         setShowLectures(false);
         trackVideoVisit(course.videos[index].lectureId);
+        setvisibleinlist(false)
    
     };
 
@@ -146,7 +124,7 @@ const CourseDetails = () => {
         setSelectedVideo(course.videos[index]); // Ensure the selected video is updated
         setShowLectures(false);
         trackVideoVisit(course.videos[index].lectureId);
-
+        setvisibleinlist(false)
    
     };
     const closeSlideshow = () => {
@@ -366,10 +344,10 @@ const closeSolutionModal = () => {
 };
 const handleSubmitAnswer = async (e) => {
     e.preventDefault();
-    // if (userAnswer.trim() === '') {
-    //     alert("Please enter an answer.");
-    //     return;
-    // }
+    if (userAnswer === '') {
+        alert("Please enter an answer.");
+        return;
+    }
   
     const exerciseQuestionId = selectedVideo.exerciseQuestions[currentExerciseIndex]?.excercise_question_Id;
 
@@ -458,6 +436,39 @@ const renderOptions = (question) => {
         </div>
     ));
 };
+const handleStartTest = (finalTest) => {
+  
+    const finalTestId = finalTest.micro_couse_final_test_Id;
+  
+     navigate(`/Finaltestinstuctions/${id}/${courseId}/${finalTestId}`);
+}
+useEffect(() => {
+    const fetchFinalTests = async () => {
+      try {
+        // Make a GET request to the backend API
+        const response = await axios.get(`http://localhost:5000/finalTest/finalexampattern/${id}/${courseId}`);
+       
+
+        // Set the response data (final tests) to the state
+        setFinalTests(response.data); 
+      } catch (err) {
+        // Set an error message if the API request fails
+        setError('Error fetching final tests');
+      } finally {
+        // Set loading to false when the data is fetched
+        setLoading(false);
+      }
+    };
+
+    // Call the function to fetch the data
+    fetchFinalTests();
+  }, [id]); 
+const calculatePercentage = (answeredQuestions, totalQuestions) => {
+    if (answeredQuestions && totalQuestions) {
+        return ((answeredQuestions / totalQuestions) * 100).toFixed(2);
+    }
+    return "0.00"; // Return 0.00 if no answeredQuestions or totalQuestions
+};
     return (
         <div>
             <HeaderMc />           
@@ -466,21 +477,72 @@ const renderOptions = (question) => {
             <div className='userInterfaceMainCon'>
                 {course && (
                     <div>
-                        <h1 className='h1mid'>{course.courseName}</h1>
+                        
                        
-                        <ul className='ullecturesshow'>
-                            {showLectures && course.videos.map((video, index) => (
-                                <li key={video.lectureId} className='lecturesshow'>
-                                    <div onClick={() => handleVideoSelect(index)}>
-                                        {video.lectureName}<FaRegPlayCircle className='videxamicon' />
-                                    </div>
-                                    <div onClick={() => handleExerciseSelect(index)}>
-                                        {video.unitExerciseName}<IoNewspaperSharp className='videxamicon' />
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
+                        <h1 className="h1mid">{course.courseName}</h1>
 
+      <ul className="ullecturesshow">
+        {showLectures && course.videos.map((video, index) => {
+          
+          // Find the corresponding video count based on the video.lectureId (unit ID)
+          const videoUnitData = percentageforve.videoCount.find(item => item.unit === video.lectureId);
+          const currentVideoCount = videoUnitData ? videoUnitData.videoCount : 0;
+
+          // Find exercise details for the current video (assuming exerciseDetails is aligned by index)
+          const exerciseDetail = percentageforve.exerciseDetails?.[index];
+          const percentage = exerciseDetail
+            ? calculatePercentage(exerciseDetail.answeredQuestions, exerciseDetail.totalQuestions)
+            : 0;
+
+          return (
+            <li key={video.lectureId} className="lecturesshow">
+              
+              {/* Video Section */}
+              <div onClick={() => handleVideoSelect(index)} className="videoexcercise">
+              <span> {video.lectureName}
+                <FaRegPlayCircle className="videxamicon" /></span> 
+                {/* Show Video Count dynamically */}
+                <span className="video-count">
+                  {`Video Count: ${currentVideoCount}`}
+
+                </span>
+              </div>
+
+              {/* Exercise Section */}
+              <div onClick={() => handleExerciseSelect(index)} className="videoexcercise">
+              <div>  {video.unitExerciseName}
+                <IoNewspaperSharp className="videxamicon" /></div> 
+
+                {/* Percentage */}
+                <span className="exercise-percentage">
+                  {exerciseDetail.answeredQuestions}/{exerciseDetail.totalQuestions}
+                </span>
+              </div>
+     
+            </li>
+          );
+        })}
+       {visibleinlist && finalTests.map((test) => (
+  <div key={test.micro_couse_final_test_Id} className="videoexcercise">
+    <span>{test.final_test_name}</span>
+
+    {accessGranted ? (
+      <button 
+        onClick={() => handleStartTest(test)}
+        className="btnStart"
+        disabled={!accessGranted}
+      >
+        Start Test
+      </button>
+    ) : (
+      <p>You do not have access to this test.</p>
+    )}
+  </div>
+))}
+      </ul>
+
+
+      
                         {selectedVideo && !showExercise && (
                             
                             <div className="slideshow">
@@ -558,7 +620,8 @@ const renderOptions = (question) => {
                                 </form>
                                        
                                         </div>
-                                     
+                                     <div>                      
+                                        
                                               <div className="number-palette">
                                     {selectedVideo.exerciseQuestions.map((question, index) => (
                                             
@@ -572,7 +635,18 @@ const renderOptions = (question) => {
                                     </button>
                                     ))}
                                 </div>
+                                <div className="legend">
+                        <h3>Legend for Question Status</h3>
+                        <ul className='ulcolor-box'>
+        <li><span className="color-box NotAnswered">1</span>  Visited but Unanswered</li>
+        <li><span className="color-box Answered">2</span>  Answered</li>
+        <li><span className="color-box Notvisted">3</span>  Not Visited</li>
+             </ul>
+                </div>
+                                </div>
+
                                         </div>
+                                        
                                 
                             </div>
                             
@@ -634,10 +708,11 @@ const renderOptions = (question) => {
                     </div>
                 )}
             </div>
+           
         </div>
-    );
-};
-
+    );                                      
+};      
+                    
 export default CourseDetails; 
 // import React, { useEffect, useState } from 'react';
 // import axios from 'axios';

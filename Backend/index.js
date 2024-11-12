@@ -437,7 +437,8 @@ const Payment = require('./Payments/Payment');
 app.use('/Payment', Payment);
 const Microcourses = require('./microcourses/microcourses');
 app.use('/microcourses', Microcourses);
-
+const finalTest = require('./microcourses/finalTest');
+app.use('/finalTest', finalTest);
 
 
 // Helper function to insert records

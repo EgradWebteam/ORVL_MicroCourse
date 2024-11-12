@@ -124,6 +124,84 @@ router.get('/my_courses/:userId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+router.get('/my_final_tests/:userId', async (req, res) => {
+    const userId = req.params.userId;
+  
+    try {
+      // Query to get the final tests for the courses the user has purchased
+      const [rows] = await db.query(`
+        SELECT
+          f.micro_couse_final_test_Id,
+          f.final_test_name,
+          f.courseCreationId,
+          f.Duration,
+          f.TotalQuestions,
+          f.TotalMarks,
+          f.status,
+          c.courseName
+        FROM
+          micro_couse_final_test f
+        JOIN
+          micro_course_creation_table c ON f.courseCreationId = c.courseCreationId
+        JOIN
+          student_buy_courses b ON b.courseCreationId = c.courseCreationId
+        WHERE
+          b.user_id = ? AND f.status = 'active'  -- Only get active final tests
+      `, [userId]);
+  
+      // If no final tests are found
+      if (rows.length > 0) {
+        res.json(rows); // Return the final tests for the purchased courses
+      } else {
+        res.status(404).json({ message: 'No final tests found for purchased courses.' });
+      }
+  
+    } catch (error) {
+      console.error('Error fetching final tests for purchased courses:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  router.get('/inmy_final_tests/:userId/:courseCreationId/:micro_course_final_test_Id', async (req, res) => { 
+    const { userId, courseCreationId, micro_course_final_test_Id } = req.params;
+  
+    try {
+      // Query to get the final tests for the courses the user has purchased
+      const [rows] = await db.query(`
+        SELECT
+          f.micro_couse_final_test_Id,
+          f.final_test_name,
+          f.courseCreationId,
+          f.Duration,
+          f.TotalQuestions,
+          f.TotalMarks,
+          f.status,
+          c.courseName
+        FROM
+          micro_couse_final_test f
+        JOIN
+          micro_course_creation_table c ON f.courseCreationId = c.courseCreationId
+        JOIN
+          student_buy_courses b ON b.courseCreationId = c.courseCreationId
+        WHERE
+          b.user_id = ? 
+          AND f.status = 'active'  
+          AND f.courseCreationId = ? 
+          AND f.micro_couse_final_test_Id = ?
+      `, [userId, courseCreationId, micro_course_final_test_Id]);
+  
+      // If no final tests are found
+      if (rows.length > 0) {
+        res.json(rows); // Return the final tests for the purchased courses
+      } else {
+        res.status(404).json({ message: 'No final tests found for purchased courses.' });
+      }
+  
+    } catch (error) {
+      console.error('Error fetching final tests for purchased courses:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
+  
 // router.get('/my_courses/course_details/:userId/:courseCreationId', checkCoursePurchased, async (req, res) => {
 //     const { userId, courseCreationId } = req.params;
 
@@ -624,6 +702,106 @@ router.get('/excerciseQuestionStatusData/:userId/:unitExerciseId', async (req, r
     } catch (error) {
         // Log the error and send a server error response
         console.error('Error fetching exercise question status data:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
+    const { userId, courseCreationId } = req.params;
+
+    if (!userId || !courseCreationId) {
+        return res.status(400).send('Missing userId or courseCreationId');
+    }
+
+    try {
+        // Step 1: Check if the user has visited all videos in the course
+        const [videos] = await db.query(
+            `SELECT unit_Id FROM unit_name WHERE courseCreationId = ?`, [courseCreationId]
+        );
+
+        // Check if the user has visited all videos
+        const [videoVisits] = await db.query(
+            `SELECT unit_Id, video_count FROM video_count WHERE user_Id = ? AND courseCreationId = ?`, 
+            [userId, courseCreationId]
+        );
+        
+        const visitedVideoIds = videoVisits.map(row => row.unit_Id);
+        const visitedVideos = videos.map(video => video.unit_Id);
+        const videoCount = videoVisits.map(video => ({
+            unit: video.unit_Id, 
+            videoCount: video.video_count
+        }));
+        
+        const allUnitIds = videos.map(video => video.unit_Id);
+        
+        // Fetch exercises related to the course based on unit_Id
+        let exercises = [];
+
+        if (allUnitIds.length > 0) {
+            [exercises]= await db.query(
+                `SELECT unit_exercise_Id, unit_exercise_name, unit_Id FROM unit_exercise WHERE unit_Id IN (?)`, 
+                [allUnitIds]
+            );
+        } else {
+            // Handle the case where allUnitIds is empty. You can return an empty result, or do something else.
+            exercises = [];
+        }
+        
+        // Step 2: Count total and answered questions for each exercise
+        const exerciseDetails = await Promise.all(exercises.map(async (exercise) => {
+            // Fetch questions for each exercise
+            const [exerciseQuestions] = await db.query(
+                `SELECT eq.excercise_question_Id 
+                 FROM excercise_questions eq
+                 WHERE eq.unit_exercise_Id = ?`, 
+                [exercise.unit_exercise_Id]
+            );
+            
+            const totalQuestions = exerciseQuestions.length;
+
+            // Fetch answered questions for each exercise
+            const [answeredQuestions] = await db.query(
+                `SELECT excercise_question_Id 
+                 FROM exercise_user_responses 
+                 WHERE user_Id = ? AND excercise_question_Id IN (?)`, 
+                [userId, exerciseQuestions.map(q => q.excercise_question_Id)]
+            );
+
+            const answeredQuestionsIds = answeredQuestions.map(row => row.excercise_question_Id);
+            const answeredQuestionCount = answeredQuestionsIds.length;
+
+            return {
+                exerciseId: exercise.unit_exercise_Id,
+                exerciseName: exercise.exercise_name,
+                totalQuestions,
+                answeredQuestions: answeredQuestionCount
+            };
+        }));
+
+        // Step 3: Check if the user has answered all questions for all exercises
+        const allExercisesAnswered = exerciseDetails.every(exercise => exercise.totalQuestions === exercise.answeredQuestions);
+
+        // Step 4: Check if all videos are visited
+        const areSetsEqual = (arr1, arr2) => {
+            return new Set(arr1).size === new Set(arr2).size &&
+                   [...new Set(arr1)].every(item => new Set(arr2).has(item));
+        };
+        
+        const allVideosVisited = areSetsEqual(allUnitIds, visitedVideoIds);
+
+        // Step 5: Determine if the user has access based on both conditions
+        const accessGranted = allVideosVisited && allExercisesAnswered;
+
+        // Step 6: Send the response with the new exercise details
+        res.json({
+            visitedVideos,
+            videoCount,
+            exerciseDetails,
+            access: accessGranted
+        });
+
+    } catch (error) {
+        console.error('Error during access status check:', error);
         res.status(500).send('Internal Server Error');
     }
 });

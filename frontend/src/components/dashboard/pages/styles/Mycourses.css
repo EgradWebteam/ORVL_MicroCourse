@@ -20,6 +20,10 @@
     width: 100%;
     height: 100%;
 }
+.userInterfaceMainCon {
+    width: 80%;
+    margin: 0 10%;
+}
 /* .btnbut {
     padding: 5px;
     background: #1e83d2;
@@ -65,24 +69,16 @@
     color: black;
     font-weight: bold;
     cursor: pointer;
+    border: 1px solid black;
     transition: background-color 0.3s ease;
     background-color: white; /* Default color */
 }
 
-.number-palette button.answered {
-    background-color: red; /* Red for answered questions */
-    color: white;
-}
 
-.number-palette button.visited {
-    background-color: lightgray; /* Light gray for visited but unanswered */
-    color: black;
-}
 
-.number-palette button.not-visited {
-    background-color: white; /* White for not visited questions */
-    color: black;
-}
+
+
+
 
 /* Optional: Add hover effect */
 .number-palette button:hover {
@@ -181,14 +177,7 @@ li.lecturesshow {
 .quesno-quesimg-flex{
     display: flex;
 }
-.number-palette {
-    border: 2px solid #000;
-    padding: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-}
+
 .containerclose {
     display: flex;
     justify-content: flex-end;
@@ -199,14 +188,21 @@ button.btnclose {
     border: 1px solid #b50605;
     padding: 5px;
 }
-.number-palette button.answered {
+.number-palette .answered {
     background-color: green;
     color: white;
+    border: 1px solid green;
 }
-button.number-plate.notAnswered {
+.number-plate.notAnswered {
     background: red;
     color: white;
+    border: 1px solid red;
+    
 }
+.ulcolor-box li{
+    list-style: none;
+}
+
 /* Modal overlay (background) */
 .modal-overlay {
     position: fixed;
@@ -256,6 +252,61 @@ button.number-plate.notAnswered {
     padding: 5px;
     font-size: 18px;
     font-weight: 700;
+}
+.NotAnswered{
+    background-color: red;
+    border: 1px solid red;
+    color: #fff;
+}
+.btnbut {
+    padding: 5px;
+    background: #1e83d2;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    border:none;
+}
+.btnStart {
+    background-color: rgb(3, 59, 105);
+    outline: none;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+}
+.btnStart:disabled {
+    background-color: rgb(102, 139, 170); /* Light gray background */
+    color: #aaa; /* Light gray text color */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+    opacity: 0.6; /* Optional: Apply opacity to make the button look inactive */
+    color: #000;
+    outline: none;
+  }
+.videoexcercise {
+    /* background: #97939352; */
+  padding :8px;
+    box-shadow: 0 0 5px #00000080;
+    display: flex;
+    justify-content: space-between;
+   
+}
+.Answered{
+    background-color: green;
+    border: 1px solid greed;
+    color: #fff;
+}
+.Notvisted{
+    background-color: #fff;
+    color: #000; 
+    border: 1px solid #000;
+}
+.color-box{
+ padding: 3px 9px;
+    border-radius: 50%;
+}
+.ulcolor-box{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
 }
 
   
