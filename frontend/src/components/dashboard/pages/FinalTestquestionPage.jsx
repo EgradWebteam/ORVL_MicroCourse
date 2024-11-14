@@ -74,18 +74,20 @@ const FinalTestquestionPage = () => {
         <div>
             <HeaderMc />
             {examDetails.courseName && (
-                <h1>{examDetails.ExamName}</h1>
+               <div className='examnamecontainer'><h1 className='examnameh1'>{examDetails.ExamName}</h1></div> 
             )}
             {test.length > 0 ? (
-                <div className='flexcolumforpaleques'><div className='exampart'>
+                <div className='flexcolumforpaleques'>
+                    <div className='exampart'>
+                    <div className='subexampart'>
                     {/* Display the current question */}
                     <div key={currentQuestion.finalTest_question_Id} className='questioninput'>
-                        <h2>Question {currentQuestion.finalTest_question_Id}</h2>
+                        <h2>Question {currentQuestion.sortIds && currentQuestion.sortIds[0]?.finalTest_question_sortId_text}</h2>
                         {currentQuestion.final_test_questionImg && (
-                            <img
+                           <div className='question1mgcontainer'> <img
                                 src={`data:image/png;base64,${currentQuestion.final_test_questionImg}`}
                                 alt={`Question ${currentQuestion.finalTest_question_Id}`}
-                            />
+                            /></div>
                         )}
                         {/* Render options or input fields based on the question type */}
                         {currentQuestion.finaltest_questiontype === 'MCQ' ? (
@@ -140,6 +142,7 @@ const FinalTestquestionPage = () => {
                                         value={answers[currentQuestion.finalTest_question_Id] || ''}
                                         onChange={(e) => handleAnswerChange(currentQuestion.finalTest_question_Id, e.target.value)}
                                         placeholder="Enter your answer"
+                                        autoComplete="off"
                                     />
                                 </label>
                             </div>
@@ -149,11 +152,11 @@ const FinalTestquestionPage = () => {
                     </div>
 
                     {/* Navigation Buttons */}
-                    <div>
+                    <div className='btnflex'>
                         <button onClick={goToPreviousQuestion} disabled={currentIndex === 0}>Previous</button>
                         <button onClick={goToNextQuestion} disabled={currentIndex === test.length - 1}>Next</button>
                     </div>
-                        </div>
+                        </div></div>
                     {/* Question Number Palette */}
                     <div className='fexnumberssubmit'>
                         <h3>{examDetails.Candidate_Name}</h3>

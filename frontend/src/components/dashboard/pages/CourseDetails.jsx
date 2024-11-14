@@ -499,8 +499,8 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
               
               {/* Video Section */}
               <div onClick={() => handleVideoSelect(index)} className="videoexcercise">
-              <span> {video.lectureName}
-                <FaRegPlayCircle className="videxamicon" /></span> 
+              <div className='videoexcerciseSUB'> {video.lectureName}
+                <FaRegPlayCircle className="videxamicon" /></div> 
                 {/* Show Video Count dynamically */}
                 <span className="video-count">
                   {`Video Count: ${currentVideoCount}`}
@@ -510,7 +510,7 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
 
               {/* Exercise Section */}
               <div onClick={() => handleExerciseSelect(index)} className="videoexcercise">
-              <div>  {video.unitExerciseName}
+              <div className='videoexcerciseSUB'>  {video.unitExerciseName}
                 <IoNewspaperSharp className="videxamicon" /></div> 
 
                 {/* Percentage */}
@@ -524,7 +524,7 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
         })}
        {visibleinlist && finalTests.map((test) => (
   <div key={test.micro_couse_final_test_Id} className="videoexcercise">
-    <span>{test.final_test_name}</span>
+    <span className='examtxt'>{test.final_test_name}</span>
 
     {accessGranted ? (
       <button 
@@ -587,7 +587,7 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                                         
                                         <div className='palate-ques-flex'>
                                         <div className="ques-number-palette">
-                                      <div className='quesno-quesimg-flex'> <h4>{currentExerciseIndex + 1}. {selectedVideo.exerciseQuestions[currentExerciseIndex]?.question_Text}</h4>
+                                      <div className='quesno-quesimg-flex'> <h4>{selectedVideo.exerciseQuestions[currentExerciseIndex]?.sortids[0]?.eq_sort_text}. {selectedVideo.exerciseQuestions[currentExerciseIndex]?.question_Text}</h4>
                                         {selectedVideo.exerciseQuestions[currentExerciseIndex]?.question_Image_Name && (
                                             
                                             <img src={`data:image/jpeg;base64,${selectedVideo.exerciseQuestions[currentExerciseIndex].question_Image_Name}`} alt={`Question ${currentExerciseIndex + 1}`} />

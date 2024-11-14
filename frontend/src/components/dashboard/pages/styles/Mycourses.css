@@ -272,26 +272,31 @@ button.btnclose {
     color: #fff;
     border-radius: 5px;
     padding: 5px;
+    cursor: pointer;
 }
 .btnStart:disabled {
-    background-color: rgb(102, 139, 170); /* Light gray background */
-    color: #aaa; /* Light gray text color */
-    cursor: not-allowed; /* Change cursor to indicate it's disabled */
-    opacity: 0.6; /* Optional: Apply opacity to make the button look inactive */
+    background-color: rgb(102, 139, 170);
+    color: #aaa; 
+    cursor: not-allowed; 
+    opacity: 0.6; 
     color: #000;
     outline: none;
   }
 .videoexcercise {
-    /* background: #97939352; */
+    background: #c0e1fc;
+    border-radius: 4px;
+  
   padding :8px;
-    box-shadow: 0 0 5px #00000080;
+    /* box-shadow: 0 0 5px #00000080; */
     display: flex;
     justify-content: space-between;
+   
+    
    
 }
 .Answered{
     background-color: green;
-    border: 1px solid greed;
+    border: 1px solid green;
     color: #fff;
 }
 .Notvisted{
@@ -308,5 +313,17 @@ button.btnclose {
     flex-direction: column;
     gap:15px;
 }
+.videoexcerciseSUB {
+    display: flex;
+    gap: 1rem;
+    text-decoration: underline;
+}
+    span.examtxt {
+        font-family: monospace;
+        font-size: 18px;
+        font-weight: 700;
+
+    } 
+
 
   

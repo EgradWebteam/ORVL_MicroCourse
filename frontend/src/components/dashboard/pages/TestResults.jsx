@@ -123,16 +123,16 @@ const TestResults = () => {
                       readOnly
                     />
                   </div>
-                  <div>
+                 
+                </div>
+              ) : null}
+ <div>
                     <strong>Correct Answer:</strong>
-                    <span className={question.result === 'correct' ? 'correct-answer' : 'wrong-answer'}>
+                    <span className={question.result === 'correct' ? 'correct-answer' : (question.userResponse ? 'wrong': 'Not Answered')}>
                       {question.correctAnswer}
                     </span>
                   </div>
-                </div>
-              ) : null}
-
-              <div className={question.result === 'correct' ? 'correct-answer' : 'wrong-answer'}>
+              <div className={question.result === 'correct' ? 'correct-answer' :  (question.userResponse ? 'wrong': 'Not Answered')}>
                 {question.result}
               </div>
             </div>

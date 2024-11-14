@@ -27,9 +27,13 @@
 .fexnumberssubmit {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     gap: 1rem;
+    width: 15vw;
+    background: #2d6891;
+    color: #fff;
+    height: 70vh;
 }
 .exampart {
     margin: 0 auto;
@@ -37,4 +41,35 @@
     display: flex;
     gap: 4rem;
     flex-direction: column;
+    
+    align-items: center;
+}
+.subexampart {
+    box-shadow: 0 0 5px #00000080;
+    padding: 10px;
+    border-radius:5px ;
+}
+.btnflex {
+    padding: 10px;
+    display: flex;
+}
+.examnamecontainer {
+    align-items: center;
+    background: #2d6891;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    padding: 5px;
+    margin-bottom: 5rem;
+}
+@media (min-width:1200px){
+    /* .question1mgcontainer {
+        width: 800px;
+        height: 300px;
+    }
+    .question1mgcontainer img{
+        width: 700px;
+        height: 250px;
+    } */
 }

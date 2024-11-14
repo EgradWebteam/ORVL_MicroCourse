@@ -875,9 +875,17 @@ router.get('/my_courses/course_details/:userId/:courseCreationId', checkCoursePu
                 if (question.question_Image_Name) {
                     question.question_Image_Name = Buffer.from(question.question_Image_Name).toString('base64');
                 }
+                const[sortids] =await db.query(`
+                    SELECT 
+                    eq_sort_text
+                    FROM excercise_question_sortids
+                    WHERE excercise_question_Id= ?`,
+                    [question.excercise_question_Id]
+                );
                 return {
                     ...question,
-                    options // Add options to the question
+                    options, // Add options to the question
+                    sortids
                 };
             }));
 
