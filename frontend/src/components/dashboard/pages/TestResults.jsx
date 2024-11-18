@@ -175,9 +175,10 @@ const TestResults = () => {
      <div className='flexscoretime'> 
       <div className='flexscoretimesub'> 
         Results:
-        <div className='flexscoresub'><p>Marks: {data?.score?.correctMarks}</p>
-      <p>Negitive Marks: {data?.score?.negativeMarks}</p>
-      <p>Obtained Total Marks: {data?.score?.totalScore}</p></div></div>
+        <div className='flexscoresub'><p><span className='spantd'>Marks:</span> {data?.score?.correctMarks}</p>
+      <p><span className='spantd'>Negitive Marks:</span> {data?.score?.negativeMarks}</p>
+      <p><span className='spantd'>Obtained Total Marks:</span> {data?.score?.totalScore}</p>
+      <p><span className='spantd'>Test Total Marks:</span> {data.totalMarks}</p></div></div>
     <div className='flexscoretimesub'>     <div className="progress-bar-container">
                                         <div className="progress-bar">
                                             <div className="time-spent" style={{ width: `${timeSpentPercentage}%` }}></div>
@@ -222,7 +223,7 @@ const TestResults = () => {
               {question.finaltest_questiontype === 'MCQ' || question.finaltest_questiontype === 'MSQ' ? (
                 <div>
                   <div>
-                    <strong>Your Answer:</strong>
+                 
                     {/* Handle MCQ and MSQ options */}
                     {question.options.map((option) => {
                       // For MCQ (Radio buttons)

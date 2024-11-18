@@ -29,6 +29,7 @@ const BuyCourses = ({userId}) => {
     
     fetchCourses();
 }, []);
+
   // Navigation function
   const handleBuyNow = (courseId) => {
     navigate(`/PaymentPage/${id}/${courseId}`);

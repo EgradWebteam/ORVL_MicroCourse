@@ -76,7 +76,12 @@ app.get("/MicroCourseNames/:examId", async (req, res) => {
     try {
       // Fetch micro courses from the database
       const [rows] = await db.query(
-        `SELECT cct.courseCreationId,cct.courseName,ect.exam_creation_Id FROM micro_course_creation_table cct JOIN exam_creation_table ect ON cct.exam_creation_Id = ect.exam_creation_Id WHERE ect.exam_creation_Id = ?`,  // Corrected this line
+        `SELECT cct.courseCreationId,
+        cct.courseName,
+        ect.exam_creation_Id
+         FROM micro_course_creation_table cct
+          JOIN exam_creation_table ect ON cct.exam_creation_Id = ect.exam_creation_I
+          d WHERE ect.exam_creation_Id = ?`,  // Corrected this line
         [examId]  // Added a comma here
       );
   
@@ -439,6 +444,8 @@ const Microcourses = require('./microcourses/microcourses');
 app.use('/microcourses', Microcourses);
 const finalTest = require('./microcourses/finalTest');
 app.use('/finalTest', finalTest);
+const profile = require('./login/profile');
+app.use('/profile', profile);
 
 
 // Helper function to insert records

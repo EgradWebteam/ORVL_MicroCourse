@@ -82,3 +82,8 @@ input.inputfpem.inputpayment:focus{
     padding: 5px;
     border-radius: 6px;
 }
+.exam-cards-containervl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
