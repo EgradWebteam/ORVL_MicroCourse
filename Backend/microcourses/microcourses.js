@@ -718,13 +718,13 @@ router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
         const [videos] = await db.query(
             `SELECT unit_Id FROM unit_name WHERE courseCreationId = ?`, [courseCreationId]
         );
-
+        const m = videos.length;
         // Check if the user has visited all videos
         const [videoVisits] = await db.query(
             `SELECT unit_Id, video_count FROM video_count WHERE user_Id = ? AND courseCreationId = ?`, 
             [userId, courseCreationId]
         );
-        
+        const vv = videoVisits.length; 
         const visitedVideoIds = videoVisits.map(row => row.unit_Id);
         const visitedVideos = videos.map(video => video.unit_Id);
         const videoCount = videoVisits.map(video => ({
@@ -746,7 +746,8 @@ router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
             // Handle the case where allUnitIds is empty. You can return an empty result, or do something else.
             exercises = [];
         }
-        
+        const n = exercises.length; // Number of exercises (assuming there is an exercise for each video)
+        const videoCompletionPercentage = (100/(m + n)) * vv;
         // Step 2: Count total and answered questions for each exercise
         const exerciseDetails = await Promise.all(exercises.map(async (exercise) => {
             // Fetch questions for each exercise
@@ -769,12 +770,15 @@ router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
 
             const answeredQuestionsIds = answeredQuestions.map(row => row.excercise_question_Id);
             const answeredQuestionCount = answeredQuestionsIds.length;
-
+            const exerciseCompletionPercentage = totalQuestions > 0 
+            ? (answeredQuestionCount / totalQuestions) * (100/(m + n)) * 1
+            : 0;
             return {
                 exerciseId: exercise.unit_exercise_Id,
                 exerciseName: exercise.exercise_name,
                 totalQuestions,
-                answeredQuestions: answeredQuestionCount
+                answeredQuestions: answeredQuestionCount,
+                exerciseCompletionPercentage
             };
         }));
 
@@ -791,9 +795,15 @@ router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
 
         // Step 5: Determine if the user has access based on both conditions
         const accessGranted = allVideosVisited && allExercisesAnswered;
+        const totalExercisePercentage = exerciseDetails.reduce((acc, exercise) => acc + exercise.exerciseCompletionPercentage, 0);
 
+        // Step 7: Calculate total course completion percentage
+        const totalCompletionPercentage = videoCompletionPercentage + totalExercisePercentage;
         // Step 6: Send the response with the new exercise details
         res.json({
+            videoCompletionPercentage: videoCompletionPercentage.toFixed(2), // rounding to 2 decimal places
+            exerciseCompletionPercentage: totalExercisePercentage.toFixed(2), 
+            totalCompletionPercentage: totalCompletionPercentage.toFixed(2), // rounding to 2 decimal places
             visitedVideos,
             videoCount,
             exerciseDetails,
@@ -805,6 +815,98 @@ router.get('/accessStatus/:userId/:courseCreationId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+// router.get('/courseCompletionPercentage/:userId/:courseCreationId', async (req, res) => {
+//     const { userId, courseCreationId } = req.params;
+
+//     if (!userId || !courseCreationId) {
+//         return res.status(400).send('Missing userId or courseCreationId');
+//     }
+
+//     try {
+//         // Step 1: Fetch videos for the course
+//         const [videos] = await db.query(
+//             `SELECT unit_Id FROM unit_name WHERE courseCreationId = ?`, [courseCreationId]
+//         );
+//         const m = videos.length; // Number of videos
+        
+//         // Step 2: Fetch video visits by the user (not used for video completion)
+//         const [videoVisits] = await db.query(
+//             `SELECT unit_Id FROM video_count WHERE user_Id = ? AND courseCreationId = ?`, 
+//             [userId, courseCreationId]
+//         );
+//         const vv = videoVisits.length; 
+//         // Step 3: Calculate video completion percentage (each video contributes (m + n) * 1%)
+       
+
+//         // Step 4: Fetch exercises for the course
+//         const allUnitIds = videos.map(video => video.unit_Id);
+//         let exercises = [];
+//         if (allUnitIds.length > 0) {
+//             [exercises] = await db.query(
+//                 `SELECT unit_exercise_Id, unit_exercise_name, unit_Id FROM unit_exercise WHERE unit_Id IN (?)`, 
+//                 [allUnitIds]
+//             );
+//         }
+//         const n = exercises.length; // Number of exercises (assuming there is an exercise for each video)
+//         const videoCompletionPercentage = (m + n) * vv;
+//         // Step 5: Count total and answered questions for each exercise
+//         const exerciseDetails = await Promise.all(exercises.map(async (exercise) => {
+//             // Fetch questions for each exercise
+//             const [exerciseQuestions] = await db.query(
+//                 `SELECT eq.excercise_question_Id 
+//                  FROM excercise_questions eq
+//                  WHERE eq.unit_exercise_Id = ?`, 
+//                 [exercise.unit_exercise_Id]
+//             );
+
+//             const totalQuestions = exerciseQuestions.length;
+
+//             // Fetch answered questions for each exercise
+//             const [answeredQuestions] = await db.query(
+//                 `SELECT excercise_question_Id 
+//                  FROM exercise_user_responses 
+//                  WHERE user_Id = ? AND excercise_question_Id IN (?)`, 
+//                 [userId, exerciseQuestions.map(q => q.excercise_question_Id)]
+//             );
+
+//             const answeredQuestionsIds = answeredQuestions.map(row => row.excercise_question_Id);
+//             const answeredQuestionCount = answeredQuestionsIds.length;
+
+//             // Calculate completion percentage for this exercise
+//             const exerciseCompletionPercentage = totalQuestions > 0 
+//                 ? (answeredQuestionCount / totalQuestions) * (100/(m + n)) * 1
+//                 : 0;
+
+//             return {
+//                 exerciseId: exercise.unit_exercise_Id,
+//                 exerciseName: exercise.unit_exercise_name,
+//                 totalQuestions,
+//                 answeredQuestions: answeredQuestionCount,
+//                 exerciseCompletionPercentage
+//             };
+//         }));
+
+//         // Step 6: Calculate total exercise completion percentage
+//         const totalExercisePercentage = exerciseDetails.reduce((acc, exercise) => acc + exercise.exerciseCompletionPercentage, 0);
+
+//         // Step 7: Calculate total course completion percentage
+//         const totalCompletionPercentage = videoCompletionPercentage + totalExercisePercentage;
+
+//         // Return the response
+//         res.json({
+//             videoCompletionPercentage: videoCompletionPercentage.toFixed(2), // rounding to 2 decimal places
+//             exerciseCompletionPercentage: totalExercisePercentage.toFixed(2), 
+//             totalCompletionPercentage: totalCompletionPercentage.toFixed(2), // rounding to 2 decimal places
+//             videoVisits,
+//             exerciseDetails
+//         });
+
+//     } catch (error) {
+//         console.error('Error during course completion percentage calculation:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// });
 
 
 
@@ -977,95 +1079,6 @@ router.post('/submitAnswer', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-// router.post('/updateAnswerStatus', (req, res) => {
-//     const { userId, unitExerciseId, exerciseQuestionId, answerStatus } = req.body;
-
-//     const query = `
-//         INSERT INTO user_answer_status (user_Id, unit_exercise_Id, excercise_question_Id, answer_status)
-//         VALUES (?, ?, ?, ?)
-//         ON DUPLICATE KEY UPDATE answer_status = VALUES(answer_status);
-//     `;
-
-//     db.query(query, [userId, unitExerciseId, exerciseQuestionId, answerStatus], (error, results) => {
-//         if (error) {
-//             console.error('Error updating answer status:', error);
-//             return res.status(500).send('Server Error');
-//         }
-
-//         res.status(200).json({ success: true, message: 'Answer status updated successfully' });
-//     });
-// });
-// router.post('/updateAnswerStatus', (req, res) => {
-//     const { userId, unitExerciseId, exerciseQuestionId, answerStatus } = req.body;
-
-//     // Ensure required fields are present
-//     if (!userId || !unitExerciseId || !exerciseQuestionId || !answerStatus) {
-//         return res.status(400).json({ success: false, message: 'Missing required fields' });
-//     }
-
-//     // Log the request to verify the values
-//     console.log('Received data:', { userId, unitExerciseId, exerciseQuestionId, answerStatus });
-
-//     const query = `
-//         INSERT INTO user_answer_status (user_Id, unit_exercise_Id, excercise_question_Id, answer_status)
-//         VALUES (?, ?, ?, ?)
-//         ON DUPLICATE KEY UPDATE answer_status = VALUES(answer_status);
-//     `;
-
-//     // Log the query to check the final query
-//     console.log('Executing query:', query, [userId, unitExerciseId, exerciseQuestionId, answerStatus]);
-
-//     db.query(query, [userId, unitExerciseId, exerciseQuestionId, answerStatus], (error, results) => {
-//         if (error) {
-//             console.error('Error updating answer status:', error);
-//             return res.status(500).send({ success: false, message: 'Server Error', error: error.message });
-//         }
-
-//         console.log('Query result:', results);
-//         res.status(200).json({ success: true, message: 'Answer status updated successfully', data: results });
-//     });
-// });
-
-// router.put('/update/user/answer', (req, res) => {
-//     // Extract user input from request body
-//     const { user_Id, unit_exercise_Id, excercise_question_Id } = req.body;
-
-//     // Check for missing required parameters
-//     if (!user_Id || !unit_exercise_Id || !excercise_question_Id) {
-//         return res.status(400).json({ message: 'Missing required parameters' });
-//     }
-
-//     // SQL query to update the answer_status to 1 where answer_status is 0
-//     const updateQuery = `
-//         UPDATE \`user_answer_status\`
-//         SET \`answer_status\` = 1
-//         WHERE \`user_Id\` = ? 
-//         AND \`unit_exercise_Id\` = ? 
-//         AND \`excercise_question_Id\` = ? 
-//         AND \`answer_status\` = 0;
-//     `;
-
-//     // Execute the query
-//     db.query(updateQuery, [user_Id, unit_exercise_Id, excercise_question_Id], (err, result) => {
-//         if (err) {
-//             // Log the error and return a 500 response
-//             console.error('Error executing update query:', err);
-//             return res.status(500).json({ message: 'Internal Server Error' });
-//         }
-
-//         // Log the result to help with debugging
-//         console.log('Query result:', result);
-
-//         // Check if any row was updated
-//         if (result.affectedRows === 0) {
-//             // No rows affected means either the answer has already been submitted or no matching record was found
-//             return res.status(404).json({ message: 'No record found or already answered' });
-//         }
-
-//         // Successful update response
-//         res.status(200).json({ message: 'Answer status updated successfully' });
-//     });
-// });
 
 
 

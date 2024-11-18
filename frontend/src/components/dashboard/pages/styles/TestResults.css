@@ -1,0 +1,188 @@
+.userInterfaceMainCon {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    min-height: 80vh;
+    padding: 20px;
+   
+}
+.bodyresults {
+   
+    padding-top:30px ;
+    background-color: #eef1fb; /* Set your desired background color */
+   margin-top:10px;
+    min-height: 90vh; /* Make sure the background covers the whole viewport */
+  }
+  .pch2 {
+    width: 80%;
+    margin: 0 auto;
+    color: #5bbef5;
+    font-size: 20px;
+    font-weight: 500;
+}
+.tableforres{
+    background-color: #eef1fb;
+    width: 100%;
+
+}
+.tableforres tr{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.tableforres td{
+    box-shadow: 1px 0px 1px #eef1fb;
+}
+.tableforres td span{
+    font-weight: 700;
+    padding: 0px 5px;
+}
+.buttons-container {
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+button.btndef.active {
+    background: #3db0f5;
+    border: 1px solid #3db0f5;
+    color: #fff;
+    padding: 5px 10px;
+    font-weight: 700;
+    border-radius:5px;
+}
+button.btndef {
+    background: #fff;
+    border: 1px solid #b5adad;
+    color: #40b0f1;
+    font-weight: 600;
+    border-radius:5px;
+}
+.flexscoretime {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0px 3px;
+    gap: 1rem;
+    justify-content: space-between;
+}
+.flexscoresub {
+    background: #dbe2f9;
+    color: #313030;
+    padding: 0.5rem;
+    text-align: center;
+   
+   
+}
+canvas{
+    width: 350px;
+    height:350px;
+ }
+.flexscoretimesub {
+    box-shadow: 0 0 5px #00000080;
+    width:46%;
+    padding: 1rem;
+    
+}
+/* Styles for the time progress bar */
+.progress-bar-container {
+    width: 100%;
+    margin: 20px 0;
+}
+.pie-chart-container1 {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    
+}
+.CircularProgressbarcon {
+    width: 320px;
+}
+.legendmaincon {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: space-between;
+}
+.progress-bar {
+    display: flex;
+    width: 100%;
+    height: 20px; /* Adjust the height */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    position: relative;
+}
+
+.time-spent {
+    background-color: green;
+    height: 100%;
+    border-radius: 5px 0 0 5px; /* Rounded left corners */
+}
+
+.time-left {
+    background-color: orange;
+    height: 100%;
+    border-radius: 0 5px 5px 0; /* Rounded right corners */
+}
+.time-spent-legend,
+.time-left-legend {
+  width: 20px;
+  height: 20px;
+   
+    
+}
+
+.time-spent-legend {
+    background-color: green;
+}
+
+.time-left-legend {
+    background-color: orange;
+}
+.legendcon {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+.flexscoresub {
+    background: #dbe2f9;
+    color: #313030;
+    padding: 0.5rem;
+    width: 80%;
+    margin: 0 auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+}
+.flexpercentage {
+    
+    display: flex;
+    flex-wrap: wrap;
+    width:90%;
+    margin:0 auto;
+    
+    gap: 1rem;
+    justify-content: space-between;
+}
+button.Solutionvidimg {
+    width: fit-content;
+    height: 27px;
+    background: #3fb0f2;
+    border: #3fb0f2;
+    border-radius: 5px;
+    color: #fff;
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: math;
+}
+.videocontrol {
+    padding: 20px;
+}
+div#questions-container {
+    width: 90%;
+    margin: 0 auto;
+}

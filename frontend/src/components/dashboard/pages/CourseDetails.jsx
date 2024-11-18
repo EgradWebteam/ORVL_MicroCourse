@@ -38,12 +38,13 @@ const CourseDetails = () => {
     const [error, setError] = useState(null); 
     const navigate = useNavigate();
     const [questionStatuses, setQuestionStatuses] = useState([]); // Array to track the status of each question
-
+ 
     const [lastVisitedVideoId, setLastVisitedVideoId] = useState(null);
     const [viewingSolutionForQuestion, setViewingSolutionForQuestion] = useState(null);
     const [accessGranted, setAccessGranted] = useState(null);
     const [percentageforve, setpercentageforve] = useState(null);
     const [visibleinlist, setvisibleinlist] = useState(true);
+   
     
     const trackVideoVisit = (videoId) => {
         console.log('Tracking video visit for videoId:', videoId); // Log videoId
@@ -77,6 +78,7 @@ const CourseDetails = () => {
         };
     
         checkAccess();
+        
       }, [id, courseId]); 
    
    
@@ -133,6 +135,7 @@ const CourseDetails = () => {
         setCurrentLectureIndex(0);
         setShowExercise(false);
         setShowLectures(true);
+        window.location.reload();
     };
 
     const getYouTubeEmbedUrl = (videoLink) => {
@@ -183,7 +186,15 @@ const CourseDetails = () => {
             }
         }
     };
+    const getQuestionCounts = () => {
+        const answered = questionStatuses.filter(status => status === 'answered').length;
+        const unanswered = questionStatuses.filter(status => status === 'notAnswered').length;
+        const unvisited = questionStatuses.filter(status => status === 'NotVisited').length;
 
+        return { answered, unanswered, unvisited };
+    };
+
+    const { answered, unanswered, unvisited } = getQuestionCounts();
     // Function to post the status to the server
     const postQuestionStatus = async (exerciseQuestionId, questionStatus, unitExerciseId) => {
         setLoading(true);
@@ -478,8 +489,8 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                 {course && (
                     <div>
                         
-                       
                         <h1 className="h1mid">{course.courseName}</h1>
+                        <div>percentage{percentageforve.totalCompletionPercentage}</div>
 
       <ul className="ullecturesshow">
         {showLectures && course.videos.map((video, index) => {
@@ -638,9 +649,9 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                                 <div className="legend">
                         <h3>Legend for Question Status</h3>
                         <ul className='ulcolor-box'>
-        <li><span className="color-box NotAnswered">1</span>  Visited but Unanswered</li>
-        <li><span className="color-box Answered">2</span>  Answered</li>
-        <li><span className="color-box Notvisted">3</span>  Not Visited</li>
+        <li><span className="color-box NotAnswered">{unanswered}</span>Not Answered</li>
+        <li><span className="color-box Answered">{answered}</span>  Answered</li>
+        <li><span className="color-box Notvisted">{unvisited}</span>  Not Visited</li>
              </ul>
                 </div>
                                 </div>

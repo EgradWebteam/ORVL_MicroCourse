@@ -126,7 +126,8 @@ router.get('/FinalTestquestionPage/:userId/:courseCreationId/:micro_course_final
             f.TotalMarks,
             f.status,
             c.courseName,
-            r.Candidate_Name
+            r.Candidate_Name,
+            r.Candidate_Photo
           FROM
             micro_couse_final_test f
           JOIN
@@ -152,8 +153,14 @@ router.get('/FinalTestquestionPage/:userId/:courseCreationId/:micro_course_final
         const courseName = courseRows[0].courseName;
         const ExamName = courseRows[0].final_test_name;
         const Candidate_Name = courseRows[0].Candidate_Name;
+        const ExamTime = courseRows[0].Duration;
         const FinalExam = courseRows[0];
+        let Candidate_Photo = courseRows[0].Candidate_Photo;
 
+        // Convert Candidate_Photo buffer to base64 if it exists
+        if (Candidate_Photo) {
+            Candidate_Photo = Buffer.from(Candidate_Photo).toString('base64');
+        }
 
         const Examdetails = await Promise.all(courseRows.map(async test => {
        
@@ -211,7 +218,7 @@ router.get('/FinalTestquestionPage/:userId/:courseCreationId/:micro_course_final
    
         }));
         // Return the complete response
-        res.json({ courseName,Candidate_Name,micro_course_final_test_Id, ExamName, test: Examdetails});
+        res.json({ courseName, ExamTime,Candidate_Name,Candidate_Photo,micro_course_final_test_Id, ExamName, test: Examdetails});
     } catch (error) {
         console.error('Error fetching course details:', error);
         res.status(500).send('Internal Server Error');
@@ -382,9 +389,9 @@ router.get('/Results/:userId/:courseCreationId/:micro_course_final_test_Id', asy
               AND micro_couse_final_test_Id = ?
         `, [userId, courseCreationId, micro_course_final_test_Id]);
 
-        if (userResponses.length === 0) {
-            return res.status(404).json({ message: 'No responses found for this test.' });
-        }
+        // if (userResponses.length === 0) {
+        //     return res.status(404).json({ message: 'No responses found for this test.' });
+        // }
         const answeredQuestionsCount = userResponses.filter(response => response.finalTest_userResponse_text.trim() !== '').length;
         // Fetch the questions for the final test
         const [finalQuestions] = await db.query(`
@@ -474,6 +481,7 @@ router.get('/Results/:userId/:courseCreationId/:micro_course_final_test_Id', asy
                 options
             };
         }));
+        const correctAnswersCount = processedQuestions.filter(q => q.result === 'correct').length;
         const [courseRows] = await db.query(`
             SELECT
             f.micro_couse_final_test_Id,
@@ -514,11 +522,17 @@ router.get('/Results/:userId/:courseCreationId/:micro_course_final_test_Id', asy
         const examType = courseRows[0].exam_name
         const Candidate_Name = courseRows[0].Candidate_Name;
         const FinalExam = courseRows[0];
+        const questionTypeMap = finalQuestions.reduce((acc, q) => {
+            acc[q.finalTest_question_Id] = q.finaltest_questiontype;
+            return acc;
+        }, {});
         // Return the complete response with processed questions
         res.json({
             message: 'Final test data retrieved successfully',
-            score: calculateScore(userResponses, correctAnswerMap, examType,questionTypes),  // Calculate the score here
+            score: calculateScore(userResponses, correctAnswerMap, examType,questionTypeMap),  // Calculate the score here
              totalMarks:calculateMaxPossibleScore(finalQuestions, examType),
+             correctAnswersCount,
+             courseRows,
             totalQuestions: finalQuestions.length,       // Total number of questions
             answeredQuestions: userResponses.length,
             questions: processedQuestions
@@ -529,30 +543,135 @@ router.get('/Results/:userId/:courseCreationId/:micro_course_final_test_Id', asy
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
-// Helper function to calculate score
-// function calculateScore(userResponses, correctAnswerMap) {
+
+
+// function calculateScore(userResponses, correctAnswerMap, examType, questionTypes) {
 //     let score = 0;
 
 //     userResponses.forEach(response => {
-//         const correctAnswer = correctAnswerMap[response.finalTest_question_Id];
+//         const questionId = response.finalTest_question_Id;
+//         const correctAnswer = correctAnswerMap[questionId];
+//         const questionType = questionTypes[questionId];
+// console.log(response.finalTest_question_Id)
+// console.log(questionTypes)
+//         // Only proceed if the correct answer exists and we have a valid question type
+//         if (correctAnswer && questionType) {
+//             let userAnswer = response.finalTest_userResponse_text.split(',').map(ans => ans.trim()).sort().join(',');
+//             let correctAnswerNormalized = correctAnswer.split(',').map(ans => ans.trim()).sort().join(',');
 
-//         // Only proceed if the correct answer exists
-//         if (correctAnswer) {
-//             // Handle Multiple Selection Questions (MSQ) by sorting the responses
-//             const userAnswer = response.finalTest_userResponse_text.split(',').sort().join(',');
-
-//             // Compare the user answer with the correct answer
-//             if (userAnswer === correctAnswer) {
-//                 score += 1;
+//             // Handle numeric values for questions expecting numbers
+//             if (!isNaN(userAnswer) && !isNaN(correctAnswerNormalized)) {
+//                 userAnswer = parseFloat(userAnswer);
+//                 correctAnswerNormalized = parseFloat(correctAnswerNormalized);
 //             }
+
+//             console.log(`Question ID: ${questionId}`);
+//             console.log(`User Answer: "${userAnswer}", Correct Answer: "${correctAnswerNormalized}"`);
+//             console.log(`questiontype:${questionType}`)
+//             console.log(`Comparing: ${userAnswer === correctAnswerNormalized}`);
+
+//             // Scoring based on exam type and question type
+//             if (examType === 'JEE' || examType === 'NEET' || examType === 'JEE-Mains' || examType === 'JEE-Advance') {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
+//                     console.log(`MCQ Scoring: ${score}`);
+//                 } else if (questionType === 'MSQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
+//                     console.log(`MSQ Scoring: ${score}`);
+//                 } else if (questionType === 'NAT') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : 0;
+//                     console.log(`NAT Scoring: ${score}`);
+//                 }
+//             } else if (examType === 'BITSAT') {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 3 : (userAnswer ? -1 : 0);
+//                     console.log(`BITSAT MCQ Scoring: ${score}`);
+//                 } else if (questionType === 'NAT') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 3 : 0;
+//                     console.log(`BITSAT NAT Scoring: ${score}`);
+//                 }
+//             } else if (examType === 'EAPCET' || examType === 'ETSCET' || examType === 'VITEEE' || examType === 'KCET' ) {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 1 : (userAnswer ? 0 : 0);
+//                     console.log(`BITSAT MCQ Scoring: ${score}`);
+//                 } 
+//                 // else if (questionType === 'NAT') {
+//                 //     score += (userAnswer === correctAnswerNormalized) ? 1 : 0;
+//                 //     console.log(`BITSAT NAT Scoring: ${score}`);
+//                 // }
+//             }
+
+//             // Handle other exam types similarly
 //         }
 //     });
 
 //     return score;
 // }
+// function calculateScore(userResponses, correctAnswerMap, examType, questionTypes) {
+//     let score = 0;
 
+//     userResponses.forEach(response  => {
+//         const questionId = response.finalTest_question_Id;
+//         const correctAnswer = correctAnswerMap[questionId];
+//         const questionType = questionTypes[questionId];
+
+//         // Only proceed if the correct answer exists and we have a valid question type
+//         if (correctAnswer && questionType) {
+//             let userAnswer = response.finalTest_userResponse_text.split(',').map(ans => ans.trim()).sort().join(',');
+//             let correctAnswerNormalized = correctAnswer.split(',').map(ans => ans.trim()).sort().join(',');
+
+//             // Handle numeric values for questions expecting numbers
+//             if (!isNaN(userAnswer) && !isNaN(correctAnswerNormalized)) {
+//                 userAnswer = parseFloat(userAnswer);
+//                 correctAnswerNormalized = parseFloat(correctAnswerNormalized);
+//             }
+
+//             console.log(`Question ID: ${questionId}`);
+//             console.log(`User Answer: "${userAnswer}", Correct Answer: "${correctAnswerNormalized}"`);
+//             console.log(`Comparing: ${userAnswer === correctAnswerNormalized}`);
+
+//             // Scoring based on exam type and question type
+//             if (examType === 'JEE' || examType === 'NEET' || examType === 'JEE-Mains' || examType === 'JEE-Advance') {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
+//                     console.log(`MCQ Scoring: ${score}`);
+//                 } else if (questionType === 'MSQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
+//                     console.log(`MSQ Scoring: ${score}`);
+//                 } else if (questionType === 'NAT') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 4 : 0;
+//                     console.log(`NAT Scoring: ${score}`);
+//                 }
+//             } else if (examType === 'BITSAT') {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 3 : (userAnswer ? -1 : 0);
+//                     console.log(`BITSAT MCQ Scoring: ${score}`);
+//                 } else if (questionType === 'NAT') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 3 : 0;
+//                     console.log(`BITSAT NAT Scoring: ${score}`);
+//                 }
+//             } else if (examType === 'EAPCET' || examType === 'ETSCET' || examType === 'VITEEE' || examType === 'KCET' ) {
+//                 if (questionType === 'MCQ') {
+//                     score += (userAnswer === correctAnswerNormalized) ? 1 : (userAnswer ? 0 : 0);
+//                     console.log(`BITSAT MCQ Scoring: ${score}`);
+//                 } 
+//                 // else if (questionType === 'NAT') {
+//                 //     score += (userAnswer === correctAnswerNormalized) ? 1 : 0;
+//                 //     console.log(`BITSAT NAT Scoring: ${score}`);
+//                 // }
+//             }
+
+//             // Handle other exam types similarly
+//         }
+//     });
+
+//     return score;
+// }
 function calculateScore(userResponses, correctAnswerMap, examType, questionTypes) {
     let score = 0;
+    let correctMarks = 0;
+    let negativeMarks = 0;
+    let unattemptedMarks = 0;
 
     userResponses.forEach(response => {
         const questionId = response.finalTest_question_Id;
@@ -576,41 +695,59 @@ function calculateScore(userResponses, correctAnswerMap, examType, questionTypes
 
             // Scoring based on exam type and question type
             if (examType === 'JEE' || examType === 'NEET' || examType === 'JEE-Mains' || examType === 'JEE-Advance') {
-                if (questionType === 'MCQ') {
-                    score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
-                    console.log(`MCQ Scoring: ${score}`);
-                } else if (questionType === 'MSQ') {
-                    score += (userAnswer === correctAnswerNormalized) ? 4 : (userAnswer ? -1 : 0);
-                    console.log(`MSQ Scoring: ${score}`);
+                if (questionType === 'MCQ' || questionType === 'MSQ') {
+                    if (userAnswer === correctAnswerNormalized) {
+                        score += 4;
+                        correctMarks += 4;
+                    } else if (userAnswer) {
+                        score -= 1;
+                        negativeMarks += 1;
+                    }
                 } else if (questionType === 'NAT') {
-                    score += (userAnswer === correctAnswerNormalized) ? 4 : 0;
-                    console.log(`NAT Scoring: ${score}`);
+                    if (userAnswer === correctAnswerNormalized) {
+                        score += 4;
+                        correctMarks += 4;
+                    }
                 }
             } else if (examType === 'BITSAT') {
                 if (questionType === 'MCQ') {
-                    score += (userAnswer === correctAnswerNormalized) ? 3 : (userAnswer ? -1 : 0);
-                    console.log(`BITSAT MCQ Scoring: ${score}`);
+                    if (userAnswer === correctAnswerNormalized) {
+                        score += 3;
+                        correctMarks += 3;
+                    } else if (userAnswer) {
+                        score -= 1;
+                        negativeMarks += 1;
+                    }
                 } else if (questionType === 'NAT') {
-                    score += (userAnswer === correctAnswerNormalized) ? 3 : 0;
-                    console.log(`BITSAT NAT Scoring: ${score}`);
+                    if (userAnswer === correctAnswerNormalized) {
+                        score += 3;
+                        correctMarks += 3;
+                    }
                 }
-            } else if (examType === 'EAPCET' || examType === 'ETSCET' || examType === 'VITEEE' || examType === 'KCET' ) {
+            } else if (examType === 'EAPCET' || examType === 'ETSCET' || examType === 'VITEEE' || examType === 'KCET') {
                 if (questionType === 'MCQ') {
-                    score += (userAnswer === correctAnswerNormalized) ? 1 : (userAnswer ? 0 : 0);
-                    console.log(`BITSAT MCQ Scoring: ${score}`);
-                } 
-                // else if (questionType === 'NAT') {
-                //     score += (userAnswer === correctAnswerNormalized) ? 1 : 0;
-                //     console.log(`BITSAT NAT Scoring: ${score}`);
-                // }
+                    if (userAnswer === correctAnswerNormalized) {
+                        score += 1;
+                        correctMarks += 1;
+                    }
+                }
             }
 
-            // Handle other exam types similarly
+            // For unattempted questions (userAnswer is empty)
+            if (!userAnswer) {
+                unattemptedMarks += 0; // No marks for unattempted questions
+            }
         }
     });
 
-    return score;
+    return {
+        totalScore: score,
+        correctMarks: correctMarks,
+        negativeMarks: negativeMarks,
+        unattemptedMarks: unattemptedMarks
+    };
 }
+
 function calculateMaxPossibleScore(finalQuestions, examType) {
     let maxScore = 0;
 

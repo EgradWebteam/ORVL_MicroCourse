@@ -30,38 +30,227 @@
     justify-content: space-evenly;
     align-items: center;
     gap: 1rem;
-    width: 15vw;
-    background: #2d6891;
-    color: #fff;
-    height: 70vh;
+    width: 17%;
+    background: #b3cbda;
+   
+    height: 82vh;
+}
+.EXAMPART1 {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 .exampart {
     margin: 0 auto;
     width: 80%;
     display: flex;
-    gap: 4rem;
+    
     flex-direction: column;
     
     align-items: center;
 }
-.subexampart {
+/* .subexampart {
     box-shadow: 0 0 5px #00000080;
     padding: 10px;
     border-radius:5px ;
-}
+} */
 .btnflex {
     padding: 10px;
     display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
 }
 .examnamecontainer {
     align-items: center;
-    background: #2d6891;
+    background: #000;
     color: #fff;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-family: fangsong;
     display: flex;
     justify-content: center;
     height: 50px;
     padding: 5px;
-    margin-bottom: 5rem;
+    margin-bottom: 10px;
+}
+.unvisited{
+    background: url('../Images/download_white.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 50px;
+    display: flex;
+    border: none;
+    justify-content: center;
+    color: #000;
+    
+    /* align-items: center; */
+}
+.NotAnswered{
+    background: url('../Images/download_notAnsered.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 50px;
+    color: #fff;
+    display: flex;
+    border: none;
+    justify-content: center;
+}
+.number-palate {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 1rem;
+
+}
+.number-palate button{
+    padding: 5px;
+}
+.LEGENDCONTAINER {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.6rem;
+    gap: 1rem;
+}
+.LegebdsubContainer {
+    display: flex;
+    gap: 5px;
+}
+.legend {
+    padding: 1rem;
+}
+input.inputtextbox {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 8px;
+    width: 250px;
+}
+.subexampart {
+    border: 1px solid #00000047;
+    margin: 0 .5rem;
+    overflow-y: scroll;
+    width: 100%;
+    height: 85%;
+    padding: 10px 1rem;
+}
+button.submittest {
+    cursor: pointer;
+    padding: 0;
+    width: 135px;
+    height: 45px;
+    border-radius: 5px;
+    text-transform: capitalize;
+    font-size: 14px;
+    font-weight: 600;
+    background: #34b930fb;
+    color: #fff;
+    border: transparent;
+    font-size: 14px;
+    font-weight: 600;
+}
+.profilephoto {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+.profilephoto img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.profilename {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: #000;
+    width: 67%;
+    padding-top: 10px;
+    height: auto;
+    margin-top: 1rem;
+    align-items: center;
+}
+.answered{
+    background: url('../Images/download_Answered_count.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 50px;
+    color: #fff;
+    display: flex;
+    border: none;
+    justify-content: center;
+}
+.bc4{
+    background: url('../Images/download_purple.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    padding-top: 3px;
+}
+.bc5{
+    background: url('../Images/Marked_for_review.png');
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    padding-top: 8px;
+}
+.btnflexsub {
+    box-shadow: 0 0 3px #00000086;
+    display: flex;
+    justify-content: space-between;
+    width: 80.5vw;
+    padding: .7rem;
+}
+.btnflexsub button{
+
+        cursor: pointer;
+        padding: 0;
+        width: 135px;
+        height: 45px;
+        border-radius:5px;
+        text-transform: capitalize;
+        font-size: 14px;
+        font-weight: 600;
+
+}
+.timeleft {
+    align-items: center;
+    background: #f0a607da;
+    border-radius: 18px;
+    color: #fff;
+    display: flex;
+    font-size: large;
+    font-weight: 700;
+    gap: 10px;
+    height: 40px;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+    width: 230px;
+}
+button.saveandnextbtn {
+    background: #34b930fb;
+    color: #fff;
+    border: 1px solid #00000025;
+}
+button.clearrespbtn {
+    background: #c9c8c8;
+    color: #000;
+    border: 1px solid #00000025;
+}
+button.nextbtn {
+    background: #efaf26;
+    border: 1px solid #00000025;
+    color: #fff !important;
+}
+button.prevbtn {
+    color: #000;
+    background: #fff;
+    border: 1px solid #0000003d;
 }
 @media (min-width:1200px){
     /* .question1mgcontainer {
