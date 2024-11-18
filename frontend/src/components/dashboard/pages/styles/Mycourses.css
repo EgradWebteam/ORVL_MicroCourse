@@ -324,6 +324,10 @@ button.btnclose {
         font-weight: 700;
 
     } 
-
+    .exam-cards-containervl {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
 
   
