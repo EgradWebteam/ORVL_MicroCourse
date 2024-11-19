@@ -22,7 +22,7 @@
 }
 .userInterfaceMainCon {
     width: 80%;
-    margin: 0 10%;
+    margin: 0px 16%;
 }
 /* .btnbut {
     padding: 5px;
@@ -36,18 +36,18 @@
     background-color: red;
     color: white;
 }
-
+ 
 .number-palette button.answered {
     background-color: green;
     color: white;
 }
-
+ 
 .number-palette button.active {
     border: 2px solid blue;
 } */
-
+ 
 /* .number-palette button {
-    /* Add your general button styles here 
+    /* Add your general button styles here
     margin: 5px;
     padding: 10px;
     border-radius: 50%;
@@ -60,7 +60,7 @@
     gap: 10px;
     margin-top: 10px;
 }
-
+ 
 .number-palette button {
     width: 30px;
     height: 30px;
@@ -73,21 +73,20 @@
     transition: background-color 0.3s ease;
     background-color: white; /* Default color */
 }
-
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /* Optional: Add hover effect */
 .number-palette button:hover {
     opacity: 0.8;
 }
-
+ 
 .active{
     background-color: #1e83d2;
-    border: 1px solid #025797;
     color: #fff;
 }
 .notactive{
@@ -99,18 +98,24 @@
     color: #fff;
     font-size: 16px;
     border: 1px solid #03595c;
+    margin: 1rem;
+ 
 }
 .btnnxtques {
     background: #1e83d2;
     color: #fff;
     padding: 5px;
     border: 1px solid #06528d;
+    margin: 1rem;
 }
-.navigation-buttons{
+.navigation-buttons {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap:1rem;
+    gap: 1rem;
+    border-top: 1px solid gray;
+    border-width: 100%;
+    margin-top: 10px;
 }
 li.lecturesshow {
     cursor: pointer;
@@ -120,7 +125,7 @@ li.lecturesshow {
     font-family: monospace;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 1rem;
 }
 .ullecturesshow{
     display: flex;
@@ -140,12 +145,17 @@ li.lecturesshow {
     flex-direction: column;
     gap: 2rem;
 }
-.h1mid{
-    text-align: center;
+.h1mid {
+    text-transform: uppercase;
+    font-size: 22px;
+    color: black;
+    margin-left: 10px;
 }
-.iframevideoplay{
-    width:50vw;
-    height:50vh;
+.iframevideoplay {
+    width: 55vw;
+    height: 55vh;
+    margin: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 .btnpreviousnxt {
     background: none;
@@ -153,15 +163,15 @@ li.lecturesshow {
 }
 .btnpreviousnxt svg{
     color: #000000bd;
-    
+   
     font-size: 35px;
     font-weight: 500;
 }
 .ques-number-palette {
     display: flex;
-   
-   
     flex-direction: column;
+    border-right: 1px solid gray;
+    overflow: scroll;
 }
 .formforques{
     display: flex;
@@ -169,24 +179,33 @@ li.lecturesshow {
    gap:10px;
    
 }
-.palate-ques-flex{
+ 
+.quesno-quesimg-flex img {
+    height: 100%;
+    width: 100%;
+}
+.palate-ques-flex {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content:space-between;
+    align-items: flex-start;
+    width: 80%;
+ 
 }
 .quesno-quesimg-flex{
     display: flex;
 }
-
+ 
 .containerclose {
     display: flex;
     justify-content: flex-end;
 }
 button.btnclose {
-    background: #f34b4a;
-    color: #fff;
-    border: 1px solid #b50605;
+    background: #ede0e0;
+    color: #100f0f;
+    border: none;
     padding: 5px;
+    font-size: 25px;
+    margin: 1rem;
 }
 .number-palette .answered {
     background-color: green;
@@ -197,12 +216,12 @@ button.btnclose {
     background: red;
     color: white;
     border: 1px solid red;
-    
+   
 }
 .ulcolor-box li{
     list-style: none;
 }
-
+ 
 /* Modal overlay (background) */
 .modal-overlay {
     position: fixed;
@@ -216,7 +235,7 @@ button.btnclose {
     align-items: center;
     z-index: 1000;
 }
-
+ 
 /* Modal content */
 .modal-content {
     background-color: white;
@@ -228,12 +247,12 @@ button.btnclose {
     max-height: 90vh;  /* Make sure modal content doesn't overflow */
     text-align: center;
 }
-
+ 
 /* Close button style */
 .modal-close-btn {
    background-color: #fff;
     border: none;
-  
+ 
     position: relative;
     left: 280px;
     cursor: pointer;
@@ -276,23 +295,23 @@ button.btnclose {
 }
 .btnStart:disabled {
     background-color: rgb(102, 139, 170);
-    color: #aaa; 
-    cursor: not-allowed; 
-    opacity: 0.6; 
+    color: #aaa;
+    cursor: not-allowed;
+    opacity: 0.6;
     color: #000;
     outline: none;
   }
-.videoexcercise {
-    background: #c0e1fc;
+  .videoexcercise {
+    background: #ffff;
     border-radius: 4px;
-  
-  padding :8px;
+    padding: 10px;
     /* box-shadow: 0 0 5px #00000080; */
     display: flex;
     justify-content: space-between;
-   
-    
-   
+    align-items: center;
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
+    border-radius: 15px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 .Answered{
     background-color: green;
@@ -301,7 +320,7 @@ button.btnclose {
 }
 .Notvisted{
     background-color: #fff;
-    color: #000; 
+    color: #000;
     border: 1px solid #000;
 }
 .color-box{
@@ -316,18 +335,116 @@ button.btnclose {
 .videoexcerciseSUB {
     display: flex;
     gap: 1rem;
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    flex-direction: column;
 }
     span.examtxt {
         font-family: monospace;
         font-size: 18px;
         font-weight: 700;
-
-    } 
+ 
+    }
     .exam-cards-containervl {
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
     }
-
-  
+ 
+  /* Course_detilas_css */
+  .Course_Details_main_container {
+    background: #ffff;
+    display: flex;
+    flex-direction: column;
+}
+.Course_Details_main_container {
+    min-height: 96px;
+    background-image: url("https://res.cloudinary.com/learning-platform/image/fetch/dpr_auto,w_auto,f_auto,q_auto/https://d1tgh8fmlzexmh.cloudfront.net/website/static-images/track_gradients/projects.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    backdrop-filter: blur(88px);
+    box-shadow: rgba(255, 255, 255, 0.32) 0px 1px 1px 0px inset;
+    background-color: rgba(255, 255, 255, 0.24);
+    overflow: scroll;
+}
+.Course_Deatils_Heading_container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0rem 0rem;
+    align-items: center;
+    width: 100%;
+    padding: 0rem;
+}
+.Course_Deatils_Heading_container p {
+    font-size: 22px;
+    color: antiquewhite;
+    margin-right: 10px;
+}
+.ullecturesshow {
+    background-color: #fff;
+    border-radius: 16px;
+    /* width: 100%; */
+    display: flex;
+    /* flex-direction: column; */
+    padding-bottom: -24px;
+    padding-top: 21px;
+    /* margin-top: -16px; */
+    /* height: auto; */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 1REM;
+}
+span.video-count {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background-color: rgb(204, 251, 241);
+    gap: 6px;
+    font-size: 16px;
+}
+span.exercise-percentage {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: fit-content;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background-color: rgb(254, 243, 199);
+    gap: 6px;
+    font-size: 16px;
+}
+.slideshow {
+    margin-top: -44px;
+    background: #ffff;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    height: 75vh;
+}
+.fJUlcl {
+    display: flex;
+    background-color: rgb(254, 243, 199);
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 56px;
+    width: 100%;
+}
+ 
+.Selected_heading_course_name {
+    /* height: 40px; */
+    /* box-sizing: border-box; */
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12.7px;
+    box-shadow: rgba(31, 45, 61, 0.05) 0px 0px 2px 2px;
+    background-color: rgb(255, 255, 255);
+    /* margin-left: -20px; */
+    /* margin-right: -30px; */
+    padding: 10px;
+    font-size: 20px;
+    margin: 10px;
+}
+ 

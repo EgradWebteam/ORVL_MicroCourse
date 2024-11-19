@@ -1,6 +1,9 @@
-.headermc{
-    width:100%;
-    height:auto;
+.headermc {
+    width: 100%;
+    height: auto;
+    padding: 1rem 0rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    margin-bottom: 1rem;
 }
 .subheadermc{
     width:90%;
@@ -11,9 +14,16 @@
 }
 .imglogo{
     width:200px;
-    height:80px;
 }
 .imglogo img{
     width:100%;
-    height:100%;
+    height:auto;
 }
+.Home_Container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 20px;
+    justify-content: center;
+}
+ 

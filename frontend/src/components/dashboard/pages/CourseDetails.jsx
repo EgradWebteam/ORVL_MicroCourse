@@ -12,6 +12,10 @@ import { IoMdClose } from "react-icons/io";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Pie } from 'react-chartjs-2';
+import { FaArrowRight } from "react-icons/fa";
+import { IoVideocamOutline } from "react-icons/io5";
+import { BsFileText } from "react-icons/bs";
+import { IoClose } from "react-icons/io5";
 import {
     Chart as ChartJS,
     ArcElement,
@@ -481,16 +485,20 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
     return "0.00"; // Return 0.00 if no answeredQuestions or totalQuestions
 };
     return (
+<div className='Course_Details_container'>
+
         <div>
             <HeaderMc />           
-            
             <NavBar userId={id} />
             <div className='userInterfaceMainCon'>
                 {course && (
-                    <div>
-                        
+                    <div className='Course_Details_main_container'>
+                        <div className='Course_Deatils_Heading_container'>
+
                         <h1 className="h1mid">{course.courseName}</h1>
-                        <div>percentage{percentageforve.totalCompletionPercentage}</div>
+                        <p>percentage{percentageforve.totalCompletionPercentage}</p>
+
+                        </div>
 
       <ul className="ullecturesshow">
         {showLectures && course.videos.map((video, index) => {
@@ -511,23 +519,25 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
               {/* Video Section */}
               <div onClick={() => handleVideoSelect(index)} className="videoexcercise">
               <div className='videoexcerciseSUB'> {video.lectureName}
-                <FaRegPlayCircle className="videxamicon" /></div> 
-                {/* Show Video Count dynamically */}
-                <span className="video-count">
-                  {`Video Count: ${currentVideoCount}`}
+              <span className="video-count">
+              <IoVideocamOutline />   {`Count:${currentVideoCount}`}
 
                 </span>
+                </div> 
+                {/* Show Video Count dynamically */}
+                <span><FaArrowRight /></span>
               </div>
 
               {/* Exercise Section */}
               <div onClick={() => handleExerciseSelect(index)} className="videoexcercise">
               <div className='videoexcerciseSUB'>  {video.unitExerciseName}
-                <IoNewspaperSharp className="videxamicon" /></div> 
-
-                {/* Percentage */}
-                <span className="exercise-percentage">
-                  {exerciseDetail.answeredQuestions}/{exerciseDetail.totalQuestions}
+              <span className="exercise-percentage">
+              <BsFileText /> Excercise:{exerciseDetail.answeredQuestions}/{exerciseDetail.totalQuestions}
                 </span>
+                </div> 
+
+                <span><FaArrowRight /></span>
+              
               </div>
      
             </li>
@@ -550,6 +560,8 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
     )}
   </div>
 ))}
+
+
       </ul>
 
 
@@ -557,9 +569,11 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                         {selectedVideo && !showExercise && (
                             
                             <div className="slideshow">
+                                <div className='SlideShow_Heading_container'>
                                  
-                                <h2 className='h1mid'>{selectedVideo.lectureName}</h2>
-                                <div className='containerclose'> <button className='btnclose' onClick={closeSlideshow}>Close</button></div> 
+                                <h2 className='Selected_heading_course_name'>{selectedVideo.lectureName}</h2>
+                                </div>
+                                <div className='containerclose'> <button className='btnclose' onClick={closeSlideshow}><IoClose /></button></div> 
                                 <div className="navigation-buttons">
                                 <button className='btnpreviousnxt' onClick={previousLectureOrExercise} disabled={currentLectureIndex === 0}>
                                         {showExercise ? <GrPrevious />: <GrPrevious />}
@@ -585,12 +599,14 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                         )}
 
                         {showExercise && (
-                            <div className="exercise-questions">
+                            <div className="slideshow">
                                 
                                 {selectedVideo.exerciseQuestions.length > 0 ? (
                                     <div>
-                                       <h2 className='h1mid'>{selectedVideo.unitExerciseName}</h2> 
-                                     <div className='containerclose'> <button className='btnclose' onClick={closeSlideshow}>Close</button></div> 
+                                                                        <div className='SlideShow_Heading_container'>
+                                       <h2 className='Selected_heading_course_name'>{selectedVideo.unitExerciseName}</h2> 
+                                       </div>
+                                     <div className='containerclose'> <button className='btnclose' onClick={closeSlideshow}><IoClose /></button></div> 
                                        
                                         <div className="navigation-buttons">
                                         <button  className='btnpreviousnxt' onClick={previousLectureOrExercise} disabled={currentLectureIndex ===-1}><GrPrevious /></button>
@@ -719,7 +735,8 @@ const calculatePercentage = (answeredQuestions, totalQuestions) => {
                     </div>
                 )}
             </div>
-           
+        </div>
+
         </div>
     );                                      
 };      

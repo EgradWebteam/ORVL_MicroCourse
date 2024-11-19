@@ -67,41 +67,90 @@ const Dashboard = () => {
   }, [id]);
 
   useEffect(() => {
-    const checkAccess = async () => {
+    const checkAccess = async (courseId) => {
+      console.log('Checking access for courseId:', courseId); // Log courseId before making the request
       try {
-        const courseId = viewedCourses.length > 0 ? viewedCourses.courseCreationId : null;
-        console.log(courseId)
+        // Log user ID and courseId
+        console.log('User ID:', id);
         const accessResponse = await axios.get(`http://localhost:5000/microcourses/accessStatus/${id}/${courseId}`);
+        console.log('Access Response:', accessResponse.data);  // Log the response from the API
         setpercentageforve(accessResponse.data);
         setCourseCompletionData(accessResponse.data); // Store the completion data
       } catch (err) {
+        console.error('Error checking access:', err);
         setError('Error checking access');
       }
     };
-
-   
-      checkAccess();
   
-  }, [id]);
+    // Log the viewedCourses to ensure it's populated
+    console.log('Viewed Courses:', viewedCourses);
+  
+    // Check access for all courses after they are fetched
+    if (viewedCourses.length > 0) {
+      viewedCourses.forEach(course => {
+        console.log('Calling checkAccess for course with ID:', course.courseCreationId); // Log each course's ID
+        checkAccess(course.courseCreationId);  // Pass courseCreationId as courseId
+      });
+    }
+  
+  }, [id, viewedCourses]);  // Trigger effect whenever 'viewedCourses' changes
+   // Trigger effect whenever 'viewedCourses' changes
+  
+ 
 
   const handleContinue = (courseId) => {
     navigate(`/mycourses/course_details/${id}/${courseId}`);
   };
+  const calculateCompletionPercentage = () => {
+    if (courseCompletionData) {
+      const completed = courseCompletionData.totalCompletionPercentage || 0;
+      console.log(completed )
+      const remaining = 100 - completed;
+      return { completed, remaining };
+    }
+    return { completed: 0, remaining: 100 }; // Default to 0% if no data
+  };
 
-  // Prepare data for the Pie chart
-  const pieChartData = courseCompletionData ? {
-    labels: ['Video Completion', 'Exercise Completion', 'Remaining'],
+  const { completed, remaining } = calculateCompletionPercentage();
+  const chartData = {
+    labels: ['completed', 'remaining'],
     datasets: [
-      {
-        data: [
-         
-          100 - (parseFloat(courseCompletionData.videoCompletionPercentage) + parseFloat(courseCompletionData.exerciseCompletionPercentage)),
-        ],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-      },
+        {
+            data: [completed, remaining],
+            backgroundColor: ['#4CAF50', '#FF5722', '#97979f'],
+            hoverOffset: 3,
+        },
     ],
-  } : null;
+};
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top',
+      labels: {
+        // Display the label and value using the chart data
+        generateLabels: (chart) => {
+          return chart.data.labels.map((label, index) => {
+            return {
+              text: `${label}: ${chart.data.datasets[0].data[index]}`, // Add value to the label
+              fillStyle: chart.data.datasets[0].backgroundColor[index], // Set the color for each label
+              strokeStyle: chart.data.datasets[0].backgroundColor[index],
+              lineWidth: 1,
+            };
+          });
+        },
+      },
+    },
+    tooltip: {
+      callbacks: {
+        label: function (tooltipItem) {
+          // Show the label and value in the tooltip
+          return `${tooltipItem.label}: ${tooltipItem.raw}`;
+        },
+      },
+    },
+  },
+};
 
   return (
     <div>
@@ -121,10 +170,7 @@ const Dashboard = () => {
               {viewedCourses.map(course => (
                 <div key={course.courseCreationId} className="courseItem">
                   <div>{course.courseName}</div>
-                  {/* Display Pie chart for each course */}
-                  {courseCompletionData && (
-                    <Pie data={pieChartData} />
-                  )}
+                  <Pie data={chartData} options={chartOptions} />
                   <button onClick={() => handleContinue(course.courseCreationId)} className="btncontinue">
                     Continue
                   </button>

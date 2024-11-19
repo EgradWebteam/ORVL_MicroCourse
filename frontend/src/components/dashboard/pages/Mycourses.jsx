@@ -39,8 +39,8 @@ const Mycourses = () => {
                     <p>Loading exams...</p> // Loading indicator
                 ) : (
                     <div className="exam-cards-containervl">
-                    
-                        
+                   
+                       
        {myCourses.map((course) => (
                                 <div className='exam-cards-containervl' key={course.courseCreationId}>
                                     <div className="exam-cardvl">
@@ -69,5 +69,6 @@ const Mycourses = () => {
         </div>
   )
 }
-
+ 
 export default Mycourses
+ 
